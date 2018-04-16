@@ -2,7 +2,11 @@ package com.github.hasanmirzae.module.composer;
 
 import org.apache.commons.text.StringSubstitutor;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,7 +16,7 @@ public class ModuleComposer {
         this.descriptor = descriptor;
     }
 
-    public String compose(){
+    public String compose() throws IOException {
         Map<String,String> map = new HashMap<String, String>();
         map.put("moduleName", descriptor.getModuleName());
         map.put("fields", generateFields());
@@ -50,6 +54,7 @@ public class ModuleComposer {
         return sub.replace("${end}.process(${entry.process(input)})");
     }
 
+
     private String generateFields() {
         Map<String,String> map = new HashMap<String, String>();
 
@@ -61,15 +66,7 @@ public class ModuleComposer {
         return null;
     }
 
-    private String getTemplate(){
-
-        return "class ${moduleName} extends AbstractModule<${inputType},${outputType}>{\n"
-                +"// fields\n"
-                +" ${fields}\n"
-                + "@Override\n"
-                + "protected Function<${inputType},${outputType}> getLogic() {\n"
-                + "   return ${return};\n"
-                + "}\n"
-                + "}";
+    private String getTemplate() throws IOException {
+        return  new String ( Files.readAllBytes( Paths.get("classpath:ConfigurableModuleTemplate.tml") ) );
     }
 }

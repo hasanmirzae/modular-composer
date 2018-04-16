@@ -1,0 +1,36 @@
+package ${package};
+
+${imports}
+
+public class ${moduleName} extends AbstractConfigurableModule<${inputType},${outputType}> {
+
+    ${fields}
+
+    private void init(){
+        List<Module<?,${inputType}>>
+    }
+
+    @Override
+    protected Function<${inputType},${outputType}> getLogic() {
+        return input ->{
+            // implementation goes here
+            throw new NotImplementedException("getLogic method not implemented yet");
+            return null;
+        };
+    }
+
+
+
+    public ${moduleName}(Configuration config){
+        super(config);
+        // init configuration
+        throw new NotImplementedException("A configurable module should handle configuration");
+    }
+
+    @Override
+    protected Collection<String> requiredConfigNames() {
+        return Arrays.asList(${requiredConfigs});
+    }
+
+}
+
