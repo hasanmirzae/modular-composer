@@ -5,10 +5,11 @@ import org.apache.commons.text.StringSubstitutor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ModuleComposer {
     private Descriptor descriptor;
@@ -19,12 +20,19 @@ public class ModuleComposer {
     public String compose() throws IOException {
         Map<String,String> map = new HashMap<String, String>();
         map.put("moduleName", descriptor.getModuleName());
-        map.put("fields", generateFields());
+        map.put("initDependencies", generateFields());
         map.put("inputType", descriptor.getInputType());
         map.put("outputType", descriptor.getOutputType());
-        map.put("return",generateReturn());
+        map.put("packageName",descriptor.getPackageName());
+        map.put("internalConnections", generateInternalConnections());
         StringSubstitutor sub = new StringSubstitutor(map);
         return sub.replace(getTemplate());
+    }
+
+    private String generateInternalConnections() {
+        return descriptor.getConnections().stream()
+                  .map(conn ->String.format("%s.addConsumer(%s)",conn.getFrom().getInstanceName(),conn.getTo().getInstanceName())+";")
+                  .collect(Collectors.joining("\n"));
     }
 
     private ModuleDescription findEntryPoint(){
@@ -45,28 +53,22 @@ public class ModuleComposer {
         return conn.get().getTo();
     }
 
-
-    private String generateReturn() {
-        Map<String,String> map = new HashMap<String, String>();
-        map.put("entry", findEntryPoint().getSimpleName().toLowerCase());
-        map.put("end", findEndPoint().getSimpleName().toLowerCase());
-        StringSubstitutor sub = new StringSubstitutor(map);
-        return sub.replace("${end}.process(${entry.process(input)})");
+    private String generateFields() {
+        return descriptor.getConnections()
+                  .stream()
+                  .flatMap(con -> Arrays.asList(con.getFrom(),con.getTo()).stream())
+                  .map(m ->generatePrivateField(m,m.getInstanceName()))
+                  .collect(Collectors.joining("\n"));
     }
 
-
-    private String generateFields() {
-        Map<String,String> map = new HashMap<String, String>();
-
-
-        map.put("entry", findEntryPoint().getSimpleName().toLowerCase());
-        map.put("end", findEndPoint().getSimpleName().toLowerCase());
-        StringSubstitutor sub = new StringSubstitutor(map);
-
-        return null;
+    private String generatePrivateField(ModuleDescription module,String fieldName){
+        if (module.isConfigurable())
+            return String.format("private final Module<%s,%s> %s = new %s<>(new Configuration(\"%s\"));",module.getInputType(),module.getOutputType(),fieldName,module.getSimpleName(),module.getConfig());
+        return String.format("private final Module<%s,%s> %s = new %s<>();",module.getInputType(),module.getOutputType(),fieldName,module.getSimpleName());
     }
 
     private String getTemplate() throws IOException {
-        return  new String ( Files.readAllBytes( Paths.get("classpath:ConfigurableModuleTemplate.tml") ) );
+        String file = System.getProperty("user.dir")+"/src/main/resources/NewConfigurableModuleTemplate.mtl";
+       return new String(Files.readAllBytes(Paths.get(file)));
     }
 }

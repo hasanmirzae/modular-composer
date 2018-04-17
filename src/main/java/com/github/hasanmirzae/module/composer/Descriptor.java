@@ -8,14 +8,10 @@ public class Descriptor {
     private List<Connection> connections = new ArrayList<>();
     private String moduleName;
     private String packageName;
-    private String inputType;
-    private String outputType;
 
-    public Descriptor(String moduleName, String packageName, String inputType, String outputType) {
+    public Descriptor(String moduleName, String packageName) {
         this.moduleName = moduleName;
         this.packageName = packageName;
-        this.inputType = inputType;
-        this.outputType = outputType;
     }
 
     public void addConnection(Connection conn){
@@ -39,10 +35,22 @@ public class Descriptor {
     }
 
     public String getInputType() {
-        return inputType;
+        return getEndPoint().getInputType();
+    }
+
+    public ModuleDescription getEntryPoint(){
+        return getConnections().stream()
+                        .filter(con -> con.getFrom().isEntryPoint())
+                        .findFirst().get().getFrom();
+    }
+
+    public ModuleDescription getEndPoint(){
+        return getConnections().stream()
+                               .filter(con -> con.getTo().isEndPoint())
+                               .findFirst().get().getTo();
     }
 
     public String getOutputType() {
-        return outputType;
+        return getEndPoint().getOutputType();
     }
 }
