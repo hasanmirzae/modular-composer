@@ -1,9 +1,11 @@
 package com.github.hasanmirzae.module.composer;
 
+import com.github.hasanmirzae.module.composer.utils.FileUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,6 +71,55 @@ public class ModuleComposer {
 
     private String getTemplate() throws IOException {
         String file = System.getProperty("user.dir")+"/src/main/resources/NewConfigurableModuleTemplate.mtl";
-       return new String(Files.readAllBytes(Paths.get(file)));
+       return FileUtils.readFile(file);
     }
+
+    public void generateProject(String projectDist) throws IOException {
+        String root = Paths.get(projectDist,descriptor.getModuleName().toLowerCase()).toString();
+        FileUtils.createDirectory(root);
+        String srcDir = Paths.get(root,"src/main/java/",Arrays.stream(descriptor.getPackageName().split("\\.")).collect(Collectors.joining("/"))).toString();
+        FileUtils.createDirectory(srcDir);
+        FileUtils.writeTextFile(srcDir+"/"+descriptor.getModuleName()+".java",compose());
+        FileUtils.writeTextFile(Paths.get(root,"pom.xml").toString(),composePom());
+
+    }
+
+    private String composePom() throws IOException {
+        Map<String,String> map = new HashMap<>();
+        map.put("groupId", descriptor.getPackageName());
+        map.put("artifactId", descriptor.getModuleName().toLowerCase());
+        map.put("dependencies", generateDependencies());
+        StringSubstitutor sub = new StringSubstitutor(map);
+        return sub.replace(getPomTemplate());
+
+    }
+    private String getPomTemplate() throws IOException {
+        String file = System.getProperty("user.dir")+"/src/main/resources/PomTemplate.xml";
+        return FileUtils.readFile(file);
+    }
+
+    private String generateDependencies() {
+
+        return descriptor.getConnections()
+                .stream()
+                .flatMap(con -> Arrays.asList(con.getFrom(),con.getTo()).stream())
+                .map(m ->generateDependeny(m))
+                .collect(Collectors.joining("\n"));
+
+    }
+
+    private String generateDependeny(ModuleDescription m) {
+        Map<String,String> map = new HashMap<>();
+        map.put("groupId", m.getGroupId());
+        map.put("artifactId", m.getArtifactId());
+        map.put("version", m.getVersion());
+        StringSubstitutor sub = new StringSubstitutor(map);
+        return sub.replace(
+                "<dependency>\n" +
+                "   <groupId>${groupId}</groupId>\n" +
+                "   <artifactId>${artifactId}</artifactId>\n" +
+                "   <version>${version}</version>\n" +
+                "</dependency>\n");
+    }
+
 }

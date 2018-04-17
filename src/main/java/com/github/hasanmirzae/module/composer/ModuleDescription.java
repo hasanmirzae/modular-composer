@@ -10,6 +10,9 @@ public class ModuleDescription {
     private boolean entryPoint;
     private boolean endPoint;
     private String config;
+    private String groupId;
+    private String artifactId;
+    private String version;
 
     public ModuleDescription(String simpleName,String packageName, String inputType, String outputType,
             boolean entryPoint, boolean endPoint) {
@@ -55,6 +58,30 @@ public class ModuleDescription {
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getInstanceName() {
