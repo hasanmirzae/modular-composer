@@ -1,11 +1,21 @@
 package com.github.hasanmirzae.module.composer;
 
+import com.github.hasanmirzae.module.AbstractModule;
 import com.github.hasanmirzae.module.Configuration;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 public class ModuleComposerTest {
+
+
+    class SampleModule extends AbstractModule<String,String>{
+
+        @Override protected Function<String, String> getLogic() {
+            return null;
+        }
+    }
 
 
 
