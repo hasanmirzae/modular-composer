@@ -1,11 +1,12 @@
 package com.github.hasanmirzae.module.composer;
 
+import com.github.hasanmirzae.module.composer.model.Connection;
+import com.github.hasanmirzae.module.composer.model.Descriptor;
+import com.github.hasanmirzae.module.composer.model.ModuleDescription;
 import com.github.hasanmirzae.module.composer.utils.FileUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,8 +40,8 @@ public class ModuleComposer {
 
     private ModuleDescription findEntryPoint(){
         Optional<Connection> conn = descriptor.getConnections()
-                  .stream()
-                  .filter( c -> c.getFrom().isEntryPoint()).findFirst();
+                                              .stream()
+                                              .filter( c -> c.getFrom().isEntryPoint()).findFirst();
         if (!conn.isPresent())
             throw new IllegalArgumentException("Entry point module not found in connections");
         return conn.get().getFrom();

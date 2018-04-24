@@ -2,6 +2,9 @@ package com.github.hasanmirzae.module.composer;
 
 import com.github.hasanmirzae.module.AbstractModule;
 import com.github.hasanmirzae.module.Configuration;
+import com.github.hasanmirzae.module.composer.model.Connection;
+import com.github.hasanmirzae.module.composer.model.Descriptor;
+import com.github.hasanmirzae.module.composer.model.ModuleDescription;
 import org.junit.Test;
 
 import java.io.IOException;

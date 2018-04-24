@@ -1,4 +1,4 @@
-package com.github.hasanmirzae.module.composer;
+package com.github.hasanmirzae.module.composer.model;
 
 import com.github.hasanmirzae.module.Configuration;
 

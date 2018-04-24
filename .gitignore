@@ -1,3 +1,4 @@
 .idea
 target
 composer.iml
+src/frontend/node_modules

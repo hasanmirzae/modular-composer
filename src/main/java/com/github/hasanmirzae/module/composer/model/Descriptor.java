@@ -1,4 +1,4 @@
-package com.github.hasanmirzae.module.composer;
+package com.github.hasanmirzae.module.composer.model;
 
 import java.util.ArrayList;
 import java.util.List;
