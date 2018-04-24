@@ -13,9 +13,11 @@ public class ModuleDescription {
     private String groupId;
     private String artifactId;
     private String version;
+    private String uuid;
 
-    public ModuleDescription(String simpleName,String packageName, String inputType, String outputType,
+    public ModuleDescription(String uuid, String simpleName,String packageName, String inputType, String outputType,
             boolean entryPoint, boolean endPoint) {
+        this.uuid = uuid;
         this.simpleName = simpleName;
         this.packageName = packageName;
         this.inputType = inputType;
@@ -82,6 +84,14 @@ public class ModuleDescription {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getInstanceName() {
