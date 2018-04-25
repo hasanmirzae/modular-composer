@@ -3,15 +3,35 @@ package com.github.hasanmirzae.module.composer.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Descriptor {
+public class Descriptor extends ModuleDescription{
 
     private List<Connection> connections = new ArrayList<>();
-    private String moduleName;
-    private String packageName;
+    private String entryModuleUuid;
+    private String outputModuleUuid;
 
-    public Descriptor(String moduleName, String packageName) {
-        this.moduleName = moduleName;
-        this.packageName = packageName;
+
+    public Descriptor(String uuid,String simpleName,String packageName,String groupId,String artifactId,String version,String inputType,String outputType){
+        super(uuid,simpleName,packageName,groupId,artifactId,version,inputType,outputType);
+    }
+
+    public Descriptor(ModuleDescription descr){
+        super(descr.uuid,descr.simpleName,descr.packageName,descr.groupId,descr.artifactId,descr.version,descr.inputType,descr.outputType);
+    }
+
+    public String getEntryModuleUuid() {
+        return entryModuleUuid;
+    }
+
+    public void setEntryModuleUuid(String entryModuleUuid) {
+        this.entryModuleUuid = entryModuleUuid;
+    }
+
+    public String getOutputModuleUuid() {
+        return outputModuleUuid;
+    }
+
+    public void setOutputModuleUuid(String outputModuleUuid) {
+        this.outputModuleUuid = outputModuleUuid;
     }
 
     public void addConnection(Connection conn){
@@ -26,13 +46,6 @@ public class Descriptor {
         return connections;
     }
 
-    public String getModuleName() {
-        return moduleName;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
 
     public String getInputType() {
         return getEndPoint().getInputType();
@@ -40,13 +53,13 @@ public class Descriptor {
 
     public ModuleDescription getEntryPoint(){
         return getConnections().stream()
-                        .filter(con -> con.getFrom().isEntryPoint())
+                        .filter(con -> con.getFrom().getUuid().equals(this.entryModuleUuid))
                         .findFirst().get().getFrom();
     }
 
     public ModuleDescription getEndPoint(){
         return getConnections().stream()
-                               .filter(con -> con.getTo().isEndPoint())
+                               .filter(con -> con.getTo().getUuid().equals(this.outputModuleUuid))
                                .findFirst().get().getTo();
     }
 

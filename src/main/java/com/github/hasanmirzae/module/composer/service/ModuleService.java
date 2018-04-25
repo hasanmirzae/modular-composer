@@ -1,15 +1,13 @@
 package com.github.hasanmirzae.module.composer.service;
 
-import com.github.hasanmirzae.module.Configuration;
 import com.github.hasanmirzae.module.composer.model.*;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
+import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ModuleService {
@@ -21,15 +19,29 @@ public class ModuleService {
     }
 
     public ModuleData getModuleData(String uuid) {
-        Descriptor descriptor = getModuleDescriptor(uuid);
-        List<Node> nodes = getNodes(descriptor);
-        ModuleData data = new ModuleData(nodes, getLinks(descriptor.getConnections()),"lkhsdfui34r9879","SampleModule","org.edu","sample-mod","org.example","SNAPSHOT-1.0");
+        Optional<ModuleDescription> descriptor = moduleRepository.findById(uuid);
+        if (!descriptor.isPresent())
+            ModuleUtils.throwNotFoundModuleException(uuid);
+
+        List<Node> nodes = StreamSupport.stream(moduleRepository.findAllById(getModuleUuids(descriptor.get())).spliterator(), false)
+                .map(d -> new Node(d))
+                .collect(Collectors.toList());
+
+        ModuleData data = new ModuleData(descriptor.get(), nodes);
         return data;
+    }
+
+    private List<String> getModuleUuids(ModuleDescription descriptor) {
+        return descriptor
+                .getLinks()
+                .stream()
+                .flatMap(l -> Arrays.asList(l.getSource(), l.getTarget()).stream())
+                .collect(Collectors.toList());
     }
 
     private List<Link> getLinks(List<Connection> connections) {
         return connections.stream()
-                .map(con -> new Link(con.getFrom().getUuid(),con.getTo().getUuid()))
+                .map(con -> new Link(con.getFrom().getUuid(), con.getTo().getUuid()))
                 .collect(Collectors.toList());
     }
 
@@ -40,31 +52,21 @@ public class ModuleService {
                 .collect(Collectors.toList());
     }
 
-    private Descriptor getModuleDescriptor(String uuid) {
-        // generate sample
-        Descriptor descriptor = new Descriptor("SampleModule","com.github.hasanmirzae.module.composer");
-        Configuration config = new Configuration();
-        ModuleDescription entry = new ModuleDescription("uuid-1","SampleModule","org.edu.modules","String","String",true,false);
-        entry.setGroupId("org.edu.modules");
-        entry.setArtifactId("sample-module");
-        entry.setVersion("1.0-SNAPSHOT");
-        entry.setConfig("key1:value1,key2;value2");
-        ModuleDescription end = new ModuleDescription("uuid-2","SampleModule","org.edu.modules","String","String",false,true);
-        end.setGroupId("org.edu.modules");
-        end.setArtifactId("sample-module");
-        end.setVersion("1.0-SNAPSHOT");
-        Connection conn = new Connection(entry,end);
-        descriptor.addConnection(conn);
-        return descriptor;
-    }
 
     public ModuleData initNewModule() {
-        ModuleData data = new ModuleData(Collections.emptyList(),Collections.emptyList(),UUID.randomUUID().toString(),"SampleModule","org.edu","sample-mod","org.example","SNAPSHOT-1.0");
+        ModuleData data = new ModuleData(Collections.emptyList(), Collections.emptyList(), UUID.randomUUID().toString(), "SampleModule", "org.edu", "sample-mod", "org.example", "SNAPSHOT-1.0");
         moduleRepository.save(new ModuleDescription(data));
         return data;
     }
 
-    public void insertModule(String mouleUuid, String targetUuid) {
+    public void insertModule(String moduleUuid, String targetUuid) {
+        Optional<ModuleDescription> toBeInsertedModule = moduleRepository.findById(moduleUuid);
+        if (!toBeInsertedModule.isPresent())
+            ModuleUtils.throwNotFoundModuleException(moduleUuid);
+        Optional<ModuleDescription> targetModule = moduleRepository.findById(targetUuid);
+        if (!targetModule.isPresent())
+            ModuleUtils.throwNotFoundModuleException(targetUuid);
+
 
     }
 }

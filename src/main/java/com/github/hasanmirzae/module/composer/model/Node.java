@@ -1,12 +1,16 @@
 package com.github.hasanmirzae.module.composer.model;
 
+import org.springframework.data.annotation.Id;
+
 public class Node {
-    private String simpleName;
-    private String packageName;
-    private String groupId;
-    private String artifactId;
-    private String version;
+
+    @Id
     protected String uuid;
+    protected String simpleName;
+    protected String packageName;
+    protected String groupId;
+    protected String artifactId;
+    protected String version;
 
     public Node(String simpleName, String packageName, String groupId, String artifactId,
             String version, String uuid) {

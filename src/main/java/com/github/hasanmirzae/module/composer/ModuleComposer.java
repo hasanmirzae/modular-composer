@@ -1,6 +1,5 @@
 package com.github.hasanmirzae.module.composer;
 
-import com.github.hasanmirzae.module.composer.model.Connection;
 import com.github.hasanmirzae.module.composer.model.Descriptor;
 import com.github.hasanmirzae.module.composer.model.ModuleDescription;
 import com.github.hasanmirzae.module.composer.utils.FileUtils;
@@ -11,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ModuleComposer {
@@ -22,7 +20,7 @@ public class ModuleComposer {
 
     public String compose() throws IOException {
         Map<String,String> map = new HashMap<String, String>();
-        map.put("moduleName", descriptor.getModuleName());
+        map.put("moduleName", descriptor.getArtifactId());
         map.put("initDependencies", generateFields());
         map.put("inputType", descriptor.getInputType());
         map.put("outputType", descriptor.getOutputType());
@@ -38,22 +36,12 @@ public class ModuleComposer {
                   .collect(Collectors.joining("\n"));
     }
 
-    private ModuleDescription findEntryPoint(){
-        Optional<Connection> conn = descriptor.getConnections()
-                                              .stream()
-                                              .filter( c -> c.getFrom().isEntryPoint()).findFirst();
-        if (!conn.isPresent())
-            throw new IllegalArgumentException("Entry point module not found in connections");
-        return conn.get().getFrom();
+    private ModuleDescription getEntryPoint(){
+        return descriptor.getEntryPoint();
     }
 
-    private ModuleDescription findEndPoint(){
-        Optional<Connection> conn = descriptor.getConnections()
-                                              .stream()
-                                              .filter( c -> c.getTo().isEndPoint()).findFirst();
-        if (!conn.isPresent())
-            throw new IllegalArgumentException("End point module not found in connections");
-        return conn.get().getTo();
+    private ModuleDescription getEndPoint(){
+        return  descriptor.getEndPoint();
     }
 
     private String generateFields() {
@@ -76,11 +64,11 @@ public class ModuleComposer {
     }
 
     public void generateProject(String projectDist) throws IOException {
-        String root = Paths.get(projectDist,descriptor.getModuleName().toLowerCase()).toString();
+        String root = Paths.get(projectDist,descriptor.getArtifactId()).toString();
         FileUtils.createDirectory(root);
         String srcDir = Paths.get(root,"src/main/java/",Arrays.stream(descriptor.getPackageName().split("\\.")).collect(Collectors.joining("/"))).toString();
         FileUtils.createDirectory(srcDir);
-        FileUtils.writeTextFile(srcDir+"/"+descriptor.getModuleName()+".java",compose());
+        FileUtils.writeTextFile(srcDir+"/"+descriptor.getSimpleName()+".java",compose());
         FileUtils.writeTextFile(Paths.get(root,"pom.xml").toString(),composePom());
 
     }
@@ -88,7 +76,7 @@ public class ModuleComposer {
     private String composePom() throws IOException {
         Map<String,String> map = new HashMap<>();
         map.put("groupId", descriptor.getPackageName());
-        map.put("artifactId", descriptor.getModuleName().toLowerCase());
+        map.put("artifactId", descriptor.getArtifactId());
         map.put("dependencies", generateDependencies());
         StringSubstitutor sub = new StringSubstitutor(map);
         return sub.replace(getPomTemplate());

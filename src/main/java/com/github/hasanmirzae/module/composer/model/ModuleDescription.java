@@ -1,54 +1,31 @@
 package com.github.hasanmirzae.module.composer.model;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Document(collection = "module")
-public class ModuleDescription {
-    @Id
-    private String uuid;
-    private String simpleName;
-    private String packageName;
-    private String inputType;
-    private String outputType;
-    private boolean entryPoint;
-    private boolean endPoint;
-    private String config;
-    private String groupId;
-    private String artifactId;
-    private String version;
+public class ModuleDescription extends Node{
 
-    public ModuleDescription(){
+    protected String inputType;
+    protected String outputType;
+    protected String config;
+    private List<Link> links = new ArrayList<>();
 
-    }
-    public ModuleDescription(String uuid, String simpleName,String packageName, String inputType, String outputType,
-            boolean entryPoint, boolean endPoint) {
-        this.uuid = uuid;
-        this.simpleName = simpleName;
-        this.packageName = packageName;
+    public ModuleDescription(String uuid, String simpleName,String packageName,String groupId, String artifactId, String version, String inputType, String outputType) {
+        super(simpleName,packageName,groupId,artifactId,version,uuid);
         this.inputType = inputType;
         this.outputType = outputType;
-        this.entryPoint = entryPoint;
-        this.endPoint = endPoint;
     }
 
     public ModuleDescription(ModuleData moduleData){
-        this.uuid = moduleData.getUuid();
-        this.simpleName = moduleData.getSimpleName();
-        this.packageName = moduleData.getPackageName();
+        super(moduleData.simpleName,moduleData.packageName,moduleData.groupId,moduleData.artifactId,moduleData.version,moduleData.uuid);
         // TODO input/output type
-        this.artifactId = moduleData.getArtifactId();
-        this.groupId = moduleData.getGroupId();
-        this.version = moduleData.getVersion();
     }
 
-    public String getSimpleName() {
-        return simpleName;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
 
     public String getInputType() {
         return inputType;
@@ -58,13 +35,6 @@ public class ModuleDescription {
         return outputType;
     }
 
-    public boolean isEntryPoint() {
-        return entryPoint;
-    }
-
-    public boolean isEndPoint() {
-        return endPoint;
-    }
 
     public boolean isConfigurable(){
         return config !=null;
@@ -78,43 +48,15 @@ public class ModuleDescription {
         this.config = config;
     }
 
-    public String getGroupId() {
-        return groupId;
+    public List<Link> getLinks() {
+        return links;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setLinks(List<Link> links) {
+        this.links = links;
     }
 
     public String getInstanceName() {
-        if (isEntryPoint())
-            return  "entryPoint";
-        if (isEndPoint())
-            return  "endPoint";
         return getSimpleName().toLowerCase();
     }
 }
