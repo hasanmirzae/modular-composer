@@ -2,31 +2,23 @@ package com.github.hasanmirzae.module.composer.model;
 
 import java.util.List;
 
-public class ModuleData {
-    private List<ModuleDescription> nodes;
+public class ModuleData extends Node{
+    private List<Node> nodes;
     private List<Link> links;
 
-    public ModuleData() {
-    }
 
-    public ModuleData(List<ModuleDescription> nodes, List<Link> links) {
+    public ModuleData(List<Node> nodes, List<Link> links, String uuid, String simpleName, String groupId, String artifactId, String packageName, String version) {
+        super(simpleName,packageName,groupId,artifactId,version,uuid);
         this.nodes = nodes;
         this.links = links;
     }
 
-    public List<ModuleDescription> getNodes() {
+    public List<Node> getNodes() {
         return nodes;
-    }
-
-    public void setNodes(List<ModuleDescription> nodes) {
-        this.nodes = nodes;
     }
 
     public List<Link> getLinks() {
         return links;
     }
 
-    public void setLinks(List<Link> links) {
-        this.links = links;
-    }
 }

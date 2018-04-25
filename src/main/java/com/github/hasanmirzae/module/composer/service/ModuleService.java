@@ -5,7 +5,9 @@ import com.github.hasanmirzae.module.composer.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -13,8 +15,8 @@ public class ModuleService {
 
     public ModuleData getModuleData(String uuid) {
         Descriptor descriptor = getModuleDescriptor(uuid);
-        List<ModuleDescription> nodes = getNodes(descriptor);
-        ModuleData data = new ModuleData(nodes, getLinks(descriptor.getConnections()));
+        List<Node> nodes = getNodes(descriptor);
+        ModuleData data = new ModuleData(nodes, getLinks(descriptor.getConnections()),"lkhsdfui34r9879","SampleModule","org.edu","sample-mod","org.example","SNAPSHOT-1.0");
         return data;
     }
 
@@ -24,10 +26,10 @@ public class ModuleService {
                 .collect(Collectors.toList());
     }
 
-    private List<ModuleDescription> getNodes(Descriptor descriptor) {
+    private List<Node> getNodes(Descriptor descriptor) {
         return descriptor.getConnections()
                 .stream()
-                .flatMap(con -> Arrays.asList(con.getFrom(), con.getTo()).stream())
+                .flatMap(con -> Arrays.asList(new Node(con.getFrom()), new Node(con.getTo())).stream())
                 .collect(Collectors.toList());
     }
 
@@ -40,12 +42,17 @@ public class ModuleService {
         entry.setArtifactId("sample-module");
         entry.setVersion("1.0-SNAPSHOT");
         entry.setConfig("key1:value1,key2;value2");
-        ModuleDescription end = new ModuleDescription("uuid-1","SampleModule","org.edu.modules","String","String",false,true);
+        ModuleDescription end = new ModuleDescription("uuid-2","SampleModule","org.edu.modules","String","String",false,true);
         end.setGroupId("org.edu.modules");
         end.setArtifactId("sample-module");
         end.setVersion("1.0-SNAPSHOT");
         Connection conn = new Connection(entry,end);
         descriptor.addConnection(conn);
         return descriptor;
+    }
+
+    public ModuleData initNewModule() {
+        ModuleData data = new ModuleData(Collections.emptyList(),Collections.emptyList(),UUID.randomUUID().toString(),"SampleModule","org.edu","sample-mod","org.example","SNAPSHOT-1.0");
+        return data;
     }
 }
