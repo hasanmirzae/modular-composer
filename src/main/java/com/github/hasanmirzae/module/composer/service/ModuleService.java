@@ -2,6 +2,7 @@ package com.github.hasanmirzae.module.composer.service;
 
 import com.github.hasanmirzae.module.Configuration;
 import com.github.hasanmirzae.module.composer.model.*;
+import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -12,6 +13,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class ModuleService {
+
+    private ModuleRepository moduleRepository;
+
+    public ModuleService(ModuleRepository moduleRepository) {
+        this.moduleRepository = moduleRepository;
+    }
 
     public ModuleData getModuleData(String uuid) {
         Descriptor descriptor = getModuleDescriptor(uuid);
@@ -53,6 +60,11 @@ public class ModuleService {
 
     public ModuleData initNewModule() {
         ModuleData data = new ModuleData(Collections.emptyList(),Collections.emptyList(),UUID.randomUUID().toString(),"SampleModule","org.edu","sample-mod","org.example","SNAPSHOT-1.0");
+        moduleRepository.save(new ModuleDescription(data));
         return data;
+    }
+
+    public void insertModule(String mouleUuid, String targetUuid) {
+
     }
 }

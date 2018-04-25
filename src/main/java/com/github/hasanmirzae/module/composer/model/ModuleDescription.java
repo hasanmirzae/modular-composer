@@ -1,8 +1,12 @@
 package com.github.hasanmirzae.module.composer.model;
 
-import com.github.hasanmirzae.module.Configuration;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "module")
 public class ModuleDescription {
+    @Id
+    private String uuid;
     private String simpleName;
     private String packageName;
     private String inputType;
@@ -13,8 +17,10 @@ public class ModuleDescription {
     private String groupId;
     private String artifactId;
     private String version;
-    private String uuid;
 
+    public ModuleDescription(){
+
+    }
     public ModuleDescription(String uuid, String simpleName,String packageName, String inputType, String outputType,
             boolean entryPoint, boolean endPoint) {
         this.uuid = uuid;
@@ -24,6 +30,16 @@ public class ModuleDescription {
         this.outputType = outputType;
         this.entryPoint = entryPoint;
         this.endPoint = endPoint;
+    }
+
+    public ModuleDescription(ModuleData moduleData){
+        this.uuid = moduleData.getUuid();
+        this.simpleName = moduleData.getSimpleName();
+        this.packageName = moduleData.getPackageName();
+        // TODO input/output type
+        this.artifactId = moduleData.getArtifactId();
+        this.groupId = moduleData.getGroupId();
+        this.version = moduleData.getVersion();
     }
 
     public String getSimpleName() {
