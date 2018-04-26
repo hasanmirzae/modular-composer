@@ -22,8 +22,8 @@ public class ModuleComposer {
         Map<String,String> map = new HashMap<String, String>();
         map.put("moduleName", descriptor.getArtifactId());
         map.put("initDependencies", generateFields());
-        map.put("inputType", descriptor.getInputType());
-        map.put("outputType", descriptor.getOutputType());
+        map.put("inputType", descriptor.getInputType().getSimpleName());
+        map.put("outputType", descriptor.getOutputType().getSimpleName());
         map.put("packageName",descriptor.getPackageName());
         map.put("internalConnections", generateInternalConnections());
         StringSubstitutor sub = new StringSubstitutor(map);

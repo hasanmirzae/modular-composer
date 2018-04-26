@@ -4,6 +4,7 @@ import com.github.hasanmirzae.module.AbstractModule;
 import com.github.hasanmirzae.module.Configuration;
 import com.github.hasanmirzae.module.composer.model.Connection;
 import com.github.hasanmirzae.module.composer.model.Descriptor;
+import com.github.hasanmirzae.module.composer.model.ModelType;
 import com.github.hasanmirzae.module.composer.model.ModuleDescription;
 import org.junit.Test;
 
@@ -24,11 +25,12 @@ public class ModuleComposerTest {
 
     @Test
     public void generateProjectTest() throws IOException {
-        Descriptor descriptor = new Descriptor("4345345","SampleModule","com.github.hasanmirzae.module.composer","com.github.hasanmirzae.module.composer","sample-module","SNAPSHOT-1.0","String","String");
+        ModelType stringType = new ModelType("String","java.lang");
+        Descriptor descriptor = new Descriptor("4345345","SampleModule","com.github.hasanmirzae.module.composer","com.github.hasanmirzae.module.composer","sample-module","SNAPSHOT-1.0",stringType,stringType);
         Configuration config = new Configuration();
-        ModuleDescription entry = new ModuleDescription("uuid-1","SampleModule","org.edu.modules","org.edu.modules","sample-module","SNAPSHOT-1.0","String","String");
+        ModuleDescription entry = new ModuleDescription("uuid-1","SampleModule","org.edu.modules","org.edu.modules","sample-module","SNAPSHOT-1.0",stringType,stringType);
         entry.setConfig("key1:value1,key2;value2");
-        ModuleDescription end = new ModuleDescription("uuid-2","SampleModule","org.edu.modules","org.edu.modules","sample-module","SNAPSHOT-1.0","String","String");
+        ModuleDescription end = new ModuleDescription("uuid-2","SampleModule","org.edu.modules","org.edu.modules","sample-module","SNAPSHOT-1.0",stringType,stringType);
         Connection conn = new Connection(entry,end);
         descriptor.addConnection(conn);
         ModuleComposer composer = new ModuleComposer(descriptor);

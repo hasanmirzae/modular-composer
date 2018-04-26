@@ -1,5 +1,6 @@
 package com.github.hasanmirzae.module.composer;
 
+import com.github.hasanmirzae.module.composer.repository.ModelTypeRepository;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -26,11 +27,14 @@ public class Application  {
 
         @Autowired
         private ModuleRepository moduleRepository;
+        @Autowired
+        private ModelTypeRepository modelTypeRepository;
 
         @Override
         public void run(String...args) throws Exception {
             System.out.println("Clearing repository ...");
             moduleRepository.deleteAll();
+            modelTypeRepository.deleteAll();
         }
     }
 }

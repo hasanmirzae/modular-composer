@@ -4,6 +4,10 @@ import org.springframework.data.annotation.Id;
 
 public class Node {
 
+    public Node(){
+
+    }
+
     @Id
     protected String uuid;
     protected String simpleName;

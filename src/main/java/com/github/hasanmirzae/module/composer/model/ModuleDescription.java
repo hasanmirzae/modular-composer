@@ -1,21 +1,25 @@
 package com.github.hasanmirzae.module.composer.model;
 
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Document(collection = "module")
 public class ModuleDescription extends Node{
 
-    protected String inputType;
-    protected String outputType;
+    protected ModelType inputType;
+    protected ModelType outputType;
     protected String config;
-    private List<Link> links = new ArrayList<>();
+    protected List<Link> links = new ArrayList<>();
 
-    public ModuleDescription(String uuid, String simpleName,String packageName,String groupId, String artifactId, String version, String inputType, String outputType) {
+    public ModuleDescription(){
+        super();
+    }
+
+    public ModuleDescription(String uuid, String simpleName,String packageName,String groupId, String artifactId, String version, ModelType inputType, ModelType outputType) {
         super(simpleName,packageName,groupId,artifactId,version,uuid);
         this.inputType = inputType;
         this.outputType = outputType;
@@ -26,12 +30,20 @@ public class ModuleDescription extends Node{
         // TODO input/output type
     }
 
+    public ModuleDescription(ModuleDescription modDescr){
+        super(modDescr.simpleName, modDescr.packageName,modDescr.groupId,modDescr.artifactId,modDescr.version,modDescr.uuid);
+        this.inputType = modDescr.inputType;
+        this.outputType = modDescr.outputType;
+        this.config = modDescr.config;
+        this.links = modDescr.links;
+    }
 
-    public String getInputType() {
+
+    public ModelType getInputType() {
         return inputType;
     }
 
-    public String getOutputType() {
+    public ModelType getOutputType() {
         return outputType;
     }
 

@@ -10,7 +10,7 @@ public class Descriptor extends ModuleDescription{
     private String outputModuleUuid;
 
 
-    public Descriptor(String uuid,String simpleName,String packageName,String groupId,String artifactId,String version,String inputType,String outputType){
+    public Descriptor(String uuid,String simpleName,String packageName,String groupId,String artifactId,String version,ModelType inputType,ModelType outputType){
         super(uuid,simpleName,packageName,groupId,artifactId,version,inputType,outputType);
     }
 
@@ -47,7 +47,7 @@ public class Descriptor extends ModuleDescription{
     }
 
 
-    public String getInputType() {
+    public ModelType getInputType() {
         return getEndPoint().getInputType();
     }
 
@@ -63,7 +63,7 @@ public class Descriptor extends ModuleDescription{
                                .findFirst().get().getTo();
     }
 
-    public String getOutputType() {
+    public ModelType getOutputType() {
         return getEndPoint().getOutputType();
     }
 }
