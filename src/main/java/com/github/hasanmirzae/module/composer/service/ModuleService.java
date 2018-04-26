@@ -6,9 +6,11 @@ import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
 import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ModuleService {
@@ -24,16 +26,10 @@ public class ModuleService {
     }
 
     public ModuleData getModuleData(String uuid) {
-        Optional<ModuleDescription> descriptor = moduleRepository.findById(uuid);
-        if (!descriptor.isPresent())
-            ModuleUtils.throwNotFoundModuleException(uuid);
-
-        List<Node> nodes = StreamSupport.stream(moduleRepository.findAllById(getModuleUuids(descriptor.get())).spliterator(), false)
-                .map(d -> new Node(d))
-                .collect(Collectors.toList());
-
-        ModuleData data = new ModuleData(descriptor.get(), nodes);
-        return data;
+        //TODO smelly logic!
+        if (!moduleManager.getModuleData().getUuid().equals(uuid))
+            throw new RuntimeException("Uuid of the request mismatch with current module in ModuleManager");
+        return  moduleManager.getModuleData();
     }
 
     private List<String> getModuleUuids(ModuleDescription descriptor) {
@@ -59,20 +55,17 @@ public class ModuleService {
 
 
     public ModuleData initNewModule(ModuleDescription moduleDescription) {
-        return new ModuleData(moduleManager.initNewInstance(moduleDescription),Collections.emptyList());
+        moduleDescription.setUuid(UUID.randomUUID().toString());
+        moduleManager.init(moduleDescription);
+        return moduleManager.getModuleData();
     }
 
-    public void insertModule(String selectedUuid, String targetUuid) {
-        Optional<ModuleDescription> toBeInsertedModule = moduleRepository.findById(selectedUuid);
-        if (!toBeInsertedModule.isPresent())
-            ModuleUtils.throwNotFoundModuleException(selectedUuid);
-        Optional<ModuleDescription> targetModule = moduleRepository.findById(targetUuid);
-        if (!targetModule.isPresent())
-            ModuleUtils.throwNotFoundModuleException(targetUuid);
+    public void insertModule(String uuid) {
+        Optional<ModuleDescription> module = moduleRepository.findById(uuid);
+        if (!module.isPresent())
+            ModuleUtils.throwNotFoundModuleException(uuid);
 
-        moduleManager.getDescriptor()
-
-
+        moduleManager.addModule(module.get());
     }
 
     public ModelType createNewType(ModelType modelType) {
@@ -81,5 +74,13 @@ public class ModuleService {
 
     public List<ModelType> getModelTypes(){
         return modelTypeRepository.findAll();
+    }
+
+    public void saveModule() {
+        moduleManager.save();
+    }
+
+    public void addLink(Link link) {
+        moduleManager.addLink(link);
     }
 }

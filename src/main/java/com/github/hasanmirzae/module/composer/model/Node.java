@@ -2,6 +2,8 @@ package com.github.hasanmirzae.module.composer.model;
 
 import org.springframework.data.annotation.Id;
 
+import java.util.Objects;
+
 public class Node {
 
     public Node(){
@@ -57,5 +59,23 @@ public class Node {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Objects.equals(uuid, node.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(uuid);
     }
 }

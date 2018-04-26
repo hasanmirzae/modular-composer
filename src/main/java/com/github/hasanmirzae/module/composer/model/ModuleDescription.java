@@ -5,7 +5,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Document(collection = "module")
 public class ModuleDescription extends Node{
@@ -13,7 +15,7 @@ public class ModuleDescription extends Node{
     protected ModelType inputType;
     protected ModelType outputType;
     protected String config;
-    protected List<Link> links = new ArrayList<>();
+    protected Set<Link> links = new HashSet<>();
 
     public ModuleDescription(){
         super();
@@ -60,15 +62,16 @@ public class ModuleDescription extends Node{
         this.config = config;
     }
 
-    public List<Link> getLinks() {
+    public Set<Link> getLinks() {
         return links;
     }
 
-    public void setLinks(List<Link> links) {
+    public void setLinks(Set<Link> links) {
         this.links = links;
     }
 
     public String getInstanceName() {
         return getSimpleName().toLowerCase();
     }
+
 }

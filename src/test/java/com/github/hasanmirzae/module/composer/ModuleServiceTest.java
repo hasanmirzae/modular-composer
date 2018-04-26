@@ -8,8 +8,7 @@ public class ModuleServiceTest {
 
     @Test
     public void testGettingGraphData(){
-        ModuleService moduleService = new ModuleService(null, null);
+        ModuleService moduleService = new ModuleService(null, null, null);
         ModuleData data = moduleService.getModuleData("");
-        System.out.println(data);
     }
 }

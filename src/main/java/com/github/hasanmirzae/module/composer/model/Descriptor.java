@@ -6,6 +6,7 @@ import java.util.List;
 public class Descriptor extends ModuleDescription{
 
     private List<Connection> connections = new ArrayList<>();
+    private List<ModuleDescription> modules = new ArrayList<>();
     private String entryModuleUuid;
     private String outputModuleUuid;
 
@@ -52,15 +53,27 @@ public class Descriptor extends ModuleDescription{
     }
 
     public ModuleDescription getEntryPoint(){
-        return getConnections().stream()
-                        .filter(con -> con.getFrom().getUuid().equals(this.entryModuleUuid))
-                        .findFirst().get().getFrom();
+        return modules.stream()
+                        .filter(m -> m.getUuid().equals(this.entryModuleUuid))
+                        .findFirst().get();
     }
 
     public ModuleDescription getEndPoint(){
-        return getConnections().stream()
-                               .filter(con -> con.getTo().getUuid().equals(this.outputModuleUuid))
-                               .findFirst().get().getTo();
+        return modules.stream()
+                               .filter(m -> m.getUuid().equals(this.outputModuleUuid))
+                               .findFirst().get();
+    }
+
+    public List<ModuleDescription> getModules() {
+        return modules;
+    }
+
+    public void addModule(ModuleDescription module){
+        this.modules.add(module);
+    }
+
+    public void removeModule(ModuleDescription module){
+        this.modules.remove(module);
     }
 
     public ModelType getOutputType() {

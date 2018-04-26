@@ -1,9 +1,6 @@
 package com.github.hasanmirzae.module.composer.controller;
 
-import com.github.hasanmirzae.module.composer.model.ModelType;
-import com.github.hasanmirzae.module.composer.model.ModuleData;
-import com.github.hasanmirzae.module.composer.model.ModuleDescription;
-import com.github.hasanmirzae.module.composer.model.Node;
+import com.github.hasanmirzae.module.composer.model.*;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
 import com.github.hasanmirzae.module.composer.service.ModuleService;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +31,7 @@ public class MainController {
 
     @GetMapping(value = "modules/{uuid}")
     public ModuleData getModuleData(@PathVariable String uuid){
+
         return moduleService.getModuleData(uuid);
     }
 
@@ -49,9 +47,9 @@ public class MainController {
                 .collect(Collectors.toList());
     }
 
-    @PutMapping(value = "modules/add")
-    public void insertModule(@RequestParam String target, @RequestParam String selected){
-        moduleService.insertModule(selected,target);
+    @PutMapping(value = "modules/add/{uuid}")
+    public void insertModule(@PathVariable String uuid){
+        moduleService.insertModule(uuid);
     }
 
 
@@ -63,6 +61,17 @@ public class MainController {
     @GetMapping("models")
     public List<ModelType> getModelTypes(){
         return moduleService.getModelTypes();
+    }
+
+    @PostMapping("modules/save")
+    public void saveModule(){
+        moduleService.saveModule();
+    }
+
+
+    @PostMapping("modules/links")
+    public void saveModule(@RequestBody Link link){
+        moduleService.addLink(link);
     }
 
 }
