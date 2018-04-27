@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModuleData extends ModuleDescription{
-    private List<Node> nodes;
+    private List<ModuleDescription> nodes;
 
 
     public ModuleData(){
@@ -12,17 +12,17 @@ public class ModuleData extends ModuleDescription{
     }
 
 
-    public ModuleData(ModuleDescription descr, List<Node> nodes){
+    public ModuleData(ModuleDescription descr, List<ModuleDescription> nodes){
         super(descr);
         this.nodes = new ArrayList<>(nodes);
     }
 
-    public ModuleData(List<Node> nodes, String uuid, String simpleName, String groupId, String artifactId, String packageName, String version, ModelType inputType, ModelType outputType) {
+    public ModuleData(List<ModuleDescription> nodes, String uuid, String simpleName, String groupId, String artifactId, String packageName, String version, ModelType inputType, ModelType outputType) {
         super(uuid,simpleName,packageName,groupId,artifactId,version,inputType,outputType);
         this.nodes = nodes;
     }
 
-    public List<Node> getNodes() {
+    public List<ModuleDescription> getNodes() {
         return nodes;
     }
 

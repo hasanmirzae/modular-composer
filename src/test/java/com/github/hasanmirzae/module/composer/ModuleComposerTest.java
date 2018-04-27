@@ -24,8 +24,8 @@ public class ModuleComposerTest {
 
 
 
-    @Test
-    public void generateProjectTest() throws IOException {
+//    @Test
+//    public void generateProjectTest() throws IOException {
 //        ModelType stringType = new ModelType("String","java.lang");
 //        Descriptor descriptor = new Descriptor("4345345","SampleModule","com.github.hasanmirzae.module.composer","com.github.hasanmirzae.module.composer","sample-module","SNAPSHOT-1.0",stringType,stringType);
 //        Configuration config = new Configuration();
@@ -38,7 +38,7 @@ public class ModuleComposerTest {
 //        descriptor.setEntryModuleUuid(entry.getUuid());
 //        descriptor.setOutputModuleUuid(end.getUuid());
 //        composer.generateProject("target");
-    }
+//    }
 
 
 }

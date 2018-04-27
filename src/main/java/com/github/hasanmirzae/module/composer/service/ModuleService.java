@@ -1,11 +1,13 @@
 package com.github.hasanmirzae.module.composer.service;
 
+import com.github.hasanmirzae.module.composer.ModuleComposer;
 import com.github.hasanmirzae.module.composer.model.*;
 import com.github.hasanmirzae.module.composer.repository.ModelTypeRepository;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
 import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -82,5 +84,21 @@ public class ModuleService {
 
     public void addLink(Link link) {
         moduleManager.addLink(link);
+    }
+
+    public void compose() throws IOException {
+        ModuleComposer composer = new ModuleComposer(moduleManager.generateDescriptor());
+        System.out.println(
+            composer.compose()
+        );
+    }
+
+    public void setOutputModule(String uuid) {
+        moduleManager.setOutputModule(uuid);
+    }
+
+
+    public void setEntryModule(String uuid) {
+        moduleManager.setEntryModule(uuid);
     }
 }

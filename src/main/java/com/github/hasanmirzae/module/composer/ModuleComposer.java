@@ -36,14 +36,6 @@ public class ModuleComposer {
                   .collect(Collectors.joining("\n"));
     }
 
-    private ModuleDescription getEntryPoint(){
-        return descriptor.getEntryPoint();
-    }
-
-    private ModuleDescription getEndPoint(){
-        return  descriptor.getEndPoint();
-    }
-
     private String generateFields() {
         return descriptor.getConnections()
                   .stream()
