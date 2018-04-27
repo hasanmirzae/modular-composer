@@ -1,12 +1,8 @@
 package com.github.hasanmirzae.module.composer.model;
 
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Document(collection = "module")
@@ -15,7 +11,7 @@ public class ModuleDescription extends Node{
     protected ModelType inputType;
     protected ModelType outputType;
     protected String config;
-    protected Set<Link> links = new HashSet<>();
+    protected Set<Connection> links = new HashSet<>();
 
     public ModuleDescription(){
         super();
@@ -62,16 +58,17 @@ public class ModuleDescription extends Node{
         this.config = config;
     }
 
-    public Set<Link> getLinks() {
+    public Set<Connection> getLinks() {
         return links;
     }
 
-    public void setLinks(Set<Link> links) {
+    public void setLinks(Set<Connection> links) {
         this.links = links;
     }
 
     public String getInstanceName() {
         return getSimpleName().toLowerCase();
     }
+
 
 }

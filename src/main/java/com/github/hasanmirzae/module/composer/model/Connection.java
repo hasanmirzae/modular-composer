@@ -2,20 +2,20 @@ package com.github.hasanmirzae.module.composer.model;
 
 public class Connection {
 
-    private ModuleDescription from;
-    private ModuleDescription to;
+    private ModuleDescription source;
+    private ModuleDescription target;
 
-    public Connection(ModuleDescription from, ModuleDescription to) {
-        this.from = from;
-        this.to = to;
+    public Connection(ModuleDescription source, ModuleDescription target) {
+        this.source = source;
+        this.target = target;
     }
 
-    public ModuleDescription getFrom() {
-        return from;
+    public ModuleDescription getSource() {
+        return source;
     }
 
-    public ModuleDescription getTo() {
-        return to;
+    public ModuleDescription getTarget() {
+        return target;
     }
 
     @Override public boolean equals(Object o) {
@@ -26,14 +26,14 @@ public class Connection {
 
         Connection that = (Connection) o;
 
-        if (from != null ? !from.equals(that.from) : that.from != null)
+        if (source != null ? !source.equals(that.source) : that.source != null)
             return false;
-        return to != null ? to.equals(that.to) : that.to == null;
+        return target != null ? target.equals(that.target) : that.target == null;
     }
 
     @Override public int hashCode() {
-        int result = from != null ? from.hashCode() : 0;
-        result = 31 * result + (to != null ? to.hashCode() : 0);
+        int result = source != null ? source.hashCode() : 0;
+        result = 31 * result + (target != null ? target.hashCode() : 0);
         return result;
     }
 }

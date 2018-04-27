@@ -5,6 +5,7 @@ import com.github.hasanmirzae.module.Module;
 import java.util.List;
 import java.util.function.Function;
 import com.github.hasanmirzae.module.Configuration;
+${importTypes}
 
 public class ${moduleName} extends AbstractModule<${inputType},${outputType}>{
     // init dependency modules

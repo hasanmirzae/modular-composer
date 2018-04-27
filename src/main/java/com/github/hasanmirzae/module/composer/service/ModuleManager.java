@@ -18,7 +18,6 @@ import java.util.stream.StreamSupport;
 public class ModuleManager {
 
     private final ModuleRepository moduleRepository;
-//    private Descriptor descriptor;
     private ModuleData moduleData;
     private ModuleDescription entryModule;
     private ModuleDescription outputModule;
@@ -26,10 +25,6 @@ public class ModuleManager {
     public ModuleManager(ModuleRepository moduleRepository) {
         this.moduleRepository = moduleRepository;
     }
-
-//    public Descriptor getDescriptor(){
-//        return this.descriptor;
-//    }
 
 
     public void init(ModuleDescription moduleDescription) {
@@ -40,12 +35,20 @@ public class ModuleManager {
         return moduleData;
     }
 
-    public void setModuleData(ModuleData moduleData){
+    public void setModuleData(ModuleData moduleData) {
         this.moduleData = moduleData;
     }
 
-    public void addModule(ModuleDescription moduleDescription){
-        moduleData.getNodes().add(moduleDescription);
+    public void addModule(ModuleDescription moduleDescription) {
+        moduleData.getNodes().add(setModuleIndex(moduleDescription));
+    }
+
+    private ModuleDescription setModuleIndex(ModuleDescription moduleDescription) {
+        moduleDescription.setIndex((int) this.moduleData.getNodes().stream().filter(m -> m.getUuid()
+                                                                                          .equals(moduleDescription
+                                                                                                  .getUuid()))
+                                                        .count());
+        return moduleDescription;
     }
 
     public void save() {
@@ -53,7 +56,7 @@ public class ModuleManager {
     }
 
     public void addLink(Link link) {
-        moduleData.getLinks().add(link);
+        moduleData.getLinks().add(new Connection(findNode(link.getSource()),findNode(link.getTarget())));
     }
 
     public ModuleDescription getEntryModule() {
@@ -72,25 +75,27 @@ public class ModuleManager {
         this.outputModule = findNode(uuid);
     }
 
-    public Descriptor generateDescriptor(){
+    public Descriptor generateDescriptor() {
         Descriptor descriptor = new Descriptor(moduleData);
-        List<Connection> connections = moduleData.getLinks().stream()
-                  .map(this::linkToConnection)
-                  .collect(Collectors.toList());
-        descriptor.addConnections(connections);
+        descriptor.addConnections(moduleData.getLinks());
+        descriptor.addModules(moduleData.getNodes());
         descriptor.setEntryModule(entryModule);
         descriptor.setOutputModule(outputModule);
         return descriptor;
     }
 
-    private Connection linkToConnection(Link link) {
-        return new Connection(findNode(link.getSource()),findNode(link.getTarget()));
-    }
+    //    private Connection linkToConnection(Link link) {
+    //        return new Connection(findNode(link.getSource()),findNode(link.getTarget()));
+    //    }
 
     private ModuleDescription findNode(String uuid) {
-        return moduleData.getNodes().stream()
-                  .filter(node -> node.getUuid().equals(uuid))
-                  .findFirst().get();
+        return moduleData.getNodes().stream().filter(node -> node.getUuid().equals(uuid))
+                         .findFirst().get();
     }
 
+    private ModuleDescription findNode(Node description) {
+        return moduleData.getNodes().stream()
+                         .filter(node -> node.getUuid().equals(description.getUuid())
+                                 && node.getIndex() == description.getIndex()).findFirst().get();
+    }
 }

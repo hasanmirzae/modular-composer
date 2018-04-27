@@ -21,7 +21,7 @@ public class Descriptor extends ModuleDescription{
     }
 
     public ModuleDescription getEntryModule() {
-        return entryModule;
+        return this.entryModule;
     }
 
     public void setEntryModule(ModuleDescription entryModule) {
@@ -29,7 +29,7 @@ public class Descriptor extends ModuleDescription{
     }
 
     public ModuleDescription getOutputModule() {
-        return outputModule;
+        return this.outputModule;
     }
 
     public void setOutputModule(ModuleDescription outputModule) {
@@ -37,18 +37,18 @@ public class Descriptor extends ModuleDescription{
     }
 
     public void addConnection(Connection conn){
-        connections.add(conn);
+        this.connections.add(conn);
     }
     public void addConnections(Collection<Connection> connections){
-        connections.addAll(connections);
+        this.connections.addAll(connections);
     }
 
     public void removeConnection(Connection conn){
-        connections.remove(conn);
+        this.connections.remove(conn);
     }
 
     public List<Connection> getConnections() {
-        return connections;
+        return this.connections;
     }
 
 
@@ -63,6 +63,10 @@ public class Descriptor extends ModuleDescription{
 
     public void addModule(ModuleDescription module){
         this.modules.add(module);
+    }
+
+    public void addModules(Collection<ModuleDescription> modules){
+        this.modules.addAll(modules);
     }
 
     public void removeModule(ModuleDescription module){

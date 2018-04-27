@@ -34,26 +34,26 @@ public class ModuleService {
         return  moduleManager.getModuleData();
     }
 
-    private List<String> getModuleUuids(ModuleDescription descriptor) {
-        return descriptor
-                .getLinks()
-                .stream()
-                .flatMap(l -> Arrays.asList(l.getSource(), l.getTarget()).stream())
-                .collect(Collectors.toList());
-    }
-
-    private List<Link> getLinks(List<Connection> connections) {
-        return connections.stream()
-                .map(con -> new Link(con.getFrom().getUuid(), con.getTo().getUuid()))
-                .collect(Collectors.toList());
-    }
-
-    private List<Node> getNodes(Descriptor descriptor) {
-        return descriptor.getConnections()
-                .stream()
-                .flatMap(con -> Arrays.asList(new Node(con.getFrom()), new Node(con.getTo())).stream())
-                .collect(Collectors.toList());
-    }
+//    private List<String> getModuleUuids(ModuleDescription descriptor) {
+//        return descriptor
+//                .getLinks()
+//                .stream()
+//                .flatMap(l -> Arrays.asList(l.getSource(), l.getTarget()).stream())
+//                .collect(Collectors.toList());
+//    }
+//
+//    private List<Link> getLinks(List<Connection> connections) {
+//        return connections.stream()
+//                .map(con -> new Link(con.getSource().getUuid(), con.getTarget().getUuid()))
+//                .collect(Collectors.toList());
+//    }
+//
+//    private List<Node> getNodes(Descriptor descriptor) {
+//        return descriptor.getConnections()
+//                .stream()
+//                .flatMap(con -> Arrays.asList(new Node(con.getSource()), new Node(con.getTarget())).stream())
+//                .collect(Collectors.toList());
+//    }
 
 
     public ModuleData initNewModule(ModuleDescription moduleDescription) {
