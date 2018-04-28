@@ -9,6 +9,7 @@ import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,8 +77,13 @@ public class ModuleService {
         return modelTypeRepository.findAll();
     }
 
-    public void saveModule() {
+    public String saveModule() throws IOException {
+        validateDescriptor(moduleManager.generateDescriptor());
+        ModuleComposer composer = new ModuleComposer(moduleManager.generateDescriptor());
+        composer.generateProject("target");
+        String log = composer.buildProject(Paths.get("target").toAbsolutePath().toString(),moduleManager.getModuleData().getArtifactId());
         moduleManager.save();
+        return log;
     }
 
     public void addLink(Link link) {
@@ -95,7 +101,7 @@ public class ModuleService {
     }
 
     private void validateDescriptor(Descriptor descriptor) throws InvalidDescriptorException {
-        if (descriptor.getEntryModule() == null || descriptor.getOutputModule() == null)
+        if (!descriptor.getModules().isEmpty() && (descriptor.getEntryModule() == null || descriptor.getOutputModule() == null))
             throw new InvalidDescriptorException("EntryModule or OutputModule not defined");
     }
 

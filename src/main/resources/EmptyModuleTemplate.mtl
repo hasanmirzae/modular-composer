@@ -2,29 +2,20 @@ package ${packageName};
 
 import com.github.hasanmirzae.module.AbstractModule;
 import com.github.hasanmirzae.module.Module;
-import java.util.List;
 import java.util.function.Function;
 import com.github.hasanmirzae.module.Configuration;
 ${importTypes}
 
 public class ${moduleName} extends AbstractModule<${inputType},${outputType}>{
-    // init dependency modules
-    ${initDependencies}
 
     public ${moduleName}(){
-        init();
     }
 
-    private void init(){
-        // connect entry and end point modules
-        endPoint.addConsumer(this);
-        addConsumer(endPoint);
-        // setup internal connections
-        ${internalConnections}
-
-    }
 
     @Override protected Function<String, String> getLogic() {
-        return input -> endPoint.process(input);
+        return input -> {
+                    System.out.println("Logic to be implemented!");
+                    return null;
+        };
     }
 }

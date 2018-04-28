@@ -51,12 +51,6 @@ public class Descriptor extends ModuleDescription{
         return this.connections;
     }
 
-
-
-    public ModelType getInputType() {
-        return getOutputModule().getInputType();
-    }
-
     public List<ModuleDescription> getModules() {
         return modules;
     }

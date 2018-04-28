@@ -3,8 +3,10 @@ package com.github.hasanmirzae.module.composer;
 import com.github.hasanmirzae.module.composer.model.Descriptor;
 import com.github.hasanmirzae.module.composer.model.ModuleDescription;
 import com.github.hasanmirzae.module.composer.utils.FileUtils;
+import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.apache.commons.text.StringSubstitutor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -99,7 +101,12 @@ public class ModuleComposer {
     }
 
     private String getTemplate() throws IOException {
-        String file = System.getProperty("user.dir")+"/src/main/resources/NewConfigurableModuleTemplate.mtl";
+        String templateName;
+        if (descriptor.getModules().isEmpty())
+            templateName = "EmptyModuleTemplate.mtl";
+        else
+            templateName = "NewConfigurableModuleTemplate.mtl";
+        String file = System.getProperty("user.dir")+"/src/main/resources/"+templateName;
        return FileUtils.readFile(file);
     }
 
@@ -153,6 +160,10 @@ public class ModuleComposer {
                 "   <artifactId>${artifactId}</artifactId>\n" +
                 "   <version>${version}</version>\n" +
                 "</dependency>\n");
+    }
+
+    public String buildProject(String rootPath,String moduleName) throws IOException {
+        return ModuleUtils.execute(rootPath+"/"+moduleName,new String[]{"mvn","clean","install"});
     }
 
 }
