@@ -22,6 +22,7 @@ public class ModuleComposer {
     }
 
     public String compose() throws IOException {
+        initFieldNames();
         Map<String,String> map = new HashMap<String, String>();
         map.put("moduleName", descriptor.getSimpleName());
         map.put("initDependencies", generateFields());
@@ -31,15 +32,26 @@ public class ModuleComposer {
         map.put("internalConnections", generateInternalConnections());
         map.put("importTypes", generateTypesImport());
         StringSubstitutor sub = new StringSubstitutor(map);
-        initFieldNames();
         return sub.replace(getTemplate());
     }
 
     private void initFieldNames() {
-        descriptor.getModules().stream().forEach(m -> fieldNamesMap.put(m.getUuid(),
-                m.getInstanceName() + fieldNamesMap.values().stream().filter(name -> name
-                        .startsWith(m.getInstanceName())).count()));
+        descriptor.getModules().stream().forEach(m -> fieldNamesMap.put(getIndexedUuid(m), m.getInstanceName() + generateNameSuffix(m)));
 
+    }
+
+    private String getIndexedUuid(ModuleDescription module){
+        return module.getUuid()+"#"+module.getIndex();
+    }
+
+    private String generateNameSuffix(ModuleDescription m) {
+        int count = countSimilarNames(m);
+        return count == 0 ? "": String.valueOf(count);
+    }
+
+    private int countSimilarNames(ModuleDescription module) {
+        return (int) fieldNamesMap.values().stream().filter(name -> name
+                .startsWith(module.getInstanceName())).count();
     }
 
     private String generateTypesImport() {
@@ -53,7 +65,7 @@ public class ModuleComposer {
 
     private String generateInternalConnections() {
         return descriptor.getConnections().stream()
-                  .map(conn ->String.format("%s.addConsumer(%s)",fieldNamesMap.get(conn.getSource().getInstanceName()),fieldNamesMap.get(conn.getTarget().getInstanceName()))+";")
+                  .map(conn ->String.format("%s.addConsumer(%s);",getFieldName(conn.getSource()),getFieldName(conn.getTarget())))
                   .collect(Collectors.joining("\n"));
     }
 
@@ -61,26 +73,29 @@ public class ModuleComposer {
         return descriptor.getConnections()
                   .stream()
                   .flatMap(con -> Arrays.asList(con.getSource(),con.getTarget()).stream())
-                  .map(m ->generatePrivateField(m, generateFieldName(m)))
+                  .filter(m -> !descriptor.isEntryModule(m) || !descriptor.isOutputModule(m))
+                  .collect(Collectors.toSet())
+                  .stream()
+                  .map(m ->generatePrivateField(m))
                   .collect(Collectors.joining("\n"));
     }
 
-    private String generateFieldName(ModuleDescription m) {
-        if (m.getUuid().equals(descriptor.getEntryModule().getUuid()))
+    private String getFieldName(ModuleDescription m) {
+        if (descriptor.isEntryModule(m))
             return "entryPoint";
-        if (m.getUuid().equals(descriptor.getOutputModule().getUuid()))
+        if (descriptor.isOutputModule(m))
             return "endPoint";
-        return getFieldNameByUuid(m.getUuid());
+        return getFieldNameByIndexedUuid(m);
     }
 
-    private String getFieldNameByUuid(String uuid) {
-        return this.fieldNamesMap.get(uuid);
+    private String getFieldNameByIndexedUuid(ModuleDescription module) {
+        return this.fieldNamesMap.get(getIndexedUuid(module));
     }
 
-    private String generatePrivateField(ModuleDescription module,String fieldName){
+    private String generatePrivateField(ModuleDescription module){
         if (module.isConfigurable())
-            return String.format("private final Module<%s,%s> %s = new %s<>(new Configuration(\"%s\"));",module.getInputType().getSimpleName(),module.getOutputType().getSimpleName(),fieldName,module.getSimpleName(),module.getConfig());
-        return String.format("private final Module<%s,%s> %s = new %s<>();",module.getInputType().getSimpleName(),module.getOutputType().getSimpleName(),fieldName,module.getSimpleName());
+            return String.format("private final Module<%s,%s> %s = new %s<>(new Configuration(\"%s\"));",module.getInputType().getSimpleName(),module.getOutputType().getSimpleName(),getFieldName(module),module.getSimpleName(),module.getConfig());
+        return String.format("private final Module<%s,%s> %s = new %s<>();",module.getInputType().getSimpleName(),module.getOutputType().getSimpleName(),getFieldName(module),module.getSimpleName());
     }
 
     private String getTemplate() throws IOException {
@@ -113,10 +128,14 @@ public class ModuleComposer {
     }
 
     private String generateDependencies() {
-
-        return descriptor.getConnections()
+        // generate dependencies, duplicate aware!
+        Map<String,ModuleDescription> dependencies = new HashMap<>();
+        descriptor.getConnections()
                 .stream()
                 .flatMap(con -> Arrays.asList(con.getSource(),con.getTarget()).stream())
+                .forEach(m -> dependencies.put(m.getUuid(),m));
+        return dependencies.values()
+                .stream()
                 .map(m ->generateDependeny(m))
                 .collect(Collectors.joining("\n"));
 

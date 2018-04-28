@@ -67,7 +67,9 @@ public class ModuleDescription extends Node{
     }
 
     public String getInstanceName() {
-        return getSimpleName().toLowerCase();
+        if(this.simpleName == null)
+            return null;
+        return this.simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
     }
 
 

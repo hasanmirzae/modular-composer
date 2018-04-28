@@ -78,15 +78,15 @@ public class MainController {
         moduleService.compose();
     }
 
-    @PostMapping("modules/entry/{uuid}")
-    public void setEntryModule(@PathVariable String uuid) throws IOException {
-        moduleService.setEntryModule(uuid);
+    @PostMapping("modules/entry")
+    public void setEntryModule(@RequestBody Node node) throws IOException {
+        moduleService.setEntryModule(node);
     }
 
 
-    @PostMapping("modules/output/{uuid}")
-    public void setOutputModule(@PathVariable String uuid) throws IOException {
-        moduleService.setOutputModule(uuid);
+    @PostMapping("modules/output")
+    public void setOutputModule(@RequestBody Node node) throws IOException {
+        moduleService.setOutputModule(node);
     }
 
 

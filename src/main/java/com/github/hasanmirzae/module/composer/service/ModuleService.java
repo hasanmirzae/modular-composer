@@ -1,6 +1,7 @@
 package com.github.hasanmirzae.module.composer.service;
 
 import com.github.hasanmirzae.module.composer.ModuleComposer;
+import com.github.hasanmirzae.module.composer.exception.InvalidDescriptorException;
 import com.github.hasanmirzae.module.composer.model.*;
 import com.github.hasanmirzae.module.composer.repository.ModelTypeRepository;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
@@ -8,11 +9,9 @@ import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ModuleService {
@@ -57,7 +56,6 @@ public class ModuleService {
 
 
     public ModuleData initNewModule(ModuleDescription moduleDescription) {
-        moduleDescription.setUuid(UUID.randomUUID().toString());
         moduleManager.init(moduleDescription);
         return moduleManager.getModuleData();
     }
@@ -87,18 +85,27 @@ public class ModuleService {
     }
 
     public void compose() throws IOException {
+        validateDescriptor(moduleManager.generateDescriptor());
         ModuleComposer composer = new ModuleComposer(moduleManager.generateDescriptor());
         System.out.println(
             composer.compose()
         );
+
+        composer.generateProject("target");
     }
 
-    public void setOutputModule(String uuid) {
-        moduleManager.setOutputModule(uuid);
+    private void validateDescriptor(Descriptor descriptor) throws InvalidDescriptorException {
+        if (descriptor.getEntryModule() == null || descriptor.getOutputModule() == null)
+            throw new InvalidDescriptorException("EntryModule or OutputModule not defined");
+    }
+
+    public void setOutputModule(Node node) {
+        moduleManager.setOutputModule(node);
     }
 
 
-    public void setEntryModule(String uuid) {
-        moduleManager.setEntryModule(uuid);
+    public void setEntryModule(Node node) {
+        moduleManager.setEntryModule(node);
     }
+
 }

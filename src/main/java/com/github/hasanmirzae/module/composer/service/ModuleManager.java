@@ -1,17 +1,12 @@
 package com.github.hasanmirzae.module.composer.service;
 
-import com.github.hasanmirzae.module.Configuration;
-import com.github.hasanmirzae.module.composer.ModuleComposer;
 import com.github.hasanmirzae.module.composer.model.*;
 import com.github.hasanmirzae.module.composer.repository.ModuleRepository;
-import com.github.hasanmirzae.module.composer.utils.ModuleUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import sun.security.krb5.internal.crypto.Des;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Collections;
+import java.util.UUID;
 
 @Component
 @Scope("singleton")
@@ -28,7 +23,10 @@ public class ModuleManager {
 
 
     public void init(ModuleDescription moduleDescription) {
+        moduleDescription.setUuid(UUID.randomUUID().toString());
         this.moduleData = new ModuleData(moduleDescription, Collections.emptyList());
+        this.entryModule = null;
+        this.outputModule = null;
     }
 
     public ModuleData getModuleData() {
@@ -45,9 +43,8 @@ public class ModuleManager {
 
     private ModuleDescription setModuleIndex(ModuleDescription moduleDescription) {
         moduleDescription.setIndex((int) this.moduleData.getNodes().stream().filter(m -> m.getUuid()
-                                                                                          .equals(moduleDescription
-                                                                                                  .getUuid()))
-                                                        .count());
+                .equals(moduleDescription.getUuid()))
+                .count());
         return moduleDescription;
     }
 
@@ -56,23 +53,23 @@ public class ModuleManager {
     }
 
     public void addLink(Link link) {
-        moduleData.getLinks().add(new Connection(findNode(link.getSource()),findNode(link.getTarget())));
+        moduleData.getLinks().add(new Connection(findNode(link.getSource()), findNode(link.getTarget())));
     }
 
     public ModuleDescription getEntryModule() {
         return entryModule;
     }
 
-    public void setEntryModule(String uuid) {
-        this.entryModule = findNode(uuid);
+    public void setEntryModule(Node node) {
+        this.entryModule = findNode(node);
     }
 
     public ModuleDescription getOutputModule() {
         return outputModule;
     }
 
-    public void setOutputModule(String uuid) {
-        this.outputModule = findNode(uuid);
+    public void setOutputModule(Node node) {
+        this.outputModule = findNode(node);
     }
 
     public Descriptor generateDescriptor() {
@@ -90,12 +87,11 @@ public class ModuleManager {
 
     private ModuleDescription findNode(String uuid) {
         return moduleData.getNodes().stream().filter(node -> node.getUuid().equals(uuid))
-                         .findFirst().get();
+                .findFirst().get();
     }
 
-    private ModuleDescription findNode(Node description) {
+    private ModuleDescription findNode(Node node) {
         return moduleData.getNodes().stream()
-                         .filter(node -> node.getUuid().equals(description.getUuid())
-                                 && node.getIndex() == description.getIndex()).findFirst().get();
+                .filter(m -> m.getUuid().equals(node.getUuid()) && m.getIndex() == node.getIndex()).findFirst().get();
     }
 }

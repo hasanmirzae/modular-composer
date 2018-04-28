@@ -73,4 +73,11 @@ public class Descriptor extends ModuleDescription{
         this.modules.remove(module);
     }
 
+    public boolean isEntryModule(ModuleDescription module){
+        return this.entryModule.equals(module);
+    }
+
+    public boolean isOutputModule(ModuleDescription module){
+        return this.outputModule.equals(module);
+    }
 }
