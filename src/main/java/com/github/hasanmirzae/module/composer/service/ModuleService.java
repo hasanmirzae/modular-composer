@@ -77,12 +77,12 @@ public class ModuleService {
         return modelTypeRepository.findAll();
     }
 
-    public String saveModule() throws IOException {
+    public String saveModule(ModuleDescription module) throws IOException {
         validateDescriptor(moduleManager.generateDescriptor());
         ModuleComposer composer = new ModuleComposer(moduleManager.generateDescriptor());
         composer.generateProject("target");
         String log = composer.buildProject(Paths.get("target").toAbsolutePath().toString(),moduleManager.getModuleData().getArtifactId());
-        moduleManager.save();
+        moduleManager.save(module);
         return log;
     }
 

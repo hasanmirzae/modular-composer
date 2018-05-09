@@ -73,6 +73,27 @@ public class Node {
         this.uuid = uuid;
     }
 
+
+    public void setSimpleName(String simpleName) {
+        this.simpleName = simpleName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override public boolean equals(Object o) {
         if (this == o)
             return true;

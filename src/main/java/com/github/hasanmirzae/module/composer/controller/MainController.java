@@ -58,8 +58,8 @@ public class MainController {
     }
 
     @PostMapping("modules/save")
-    public ActionResponse saveModule() throws IOException {
-        return new ActionResponse(moduleService.saveModule());
+    public ActionResponse saveModule(@RequestBody ModuleDescription module) throws IOException {
+        return new ActionResponse(moduleService.saveModule(module));
     }
 
 

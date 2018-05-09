@@ -48,7 +48,11 @@ public class ModuleManager {
         return moduleDescription;
     }
 
-    public void save() {
+    public void save(ModuleDescription moduleDescription) {
+        this.moduleData.setGroupId(moduleDescription.getGroupId());
+        this.moduleData.setArtifactId(moduleDescription.getArtifactId());
+        this.moduleData.setSimpleName(moduleDescription.getSimpleName());
+        this.moduleData.setVersion(moduleDescription.getVersion());
         moduleRepository.save(this.moduleData);
     }
 
