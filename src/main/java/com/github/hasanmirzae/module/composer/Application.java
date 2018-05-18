@@ -18,19 +18,19 @@ public class Application  {
 
 
 
-    @Component
-    public class CommandLineAppStartupRunner implements CommandLineRunner {
-
-        @Autowired
-        private ModuleRepository moduleRepository;
-        @Autowired
-        private ModelTypeRepository modelTypeRepository;
-
-        @Override
-        public void run(String...args) throws Exception {
-            System.out.println("Clearing repository ...");
-            moduleRepository.deleteAll();
-            modelTypeRepository.deleteAll();
-        }
-    }
+//    @Component
+//    public class CommandLineAppStartupRunner implements CommandLineRunner {
+//
+//        @Autowired
+//        private ModuleRepository moduleRepository;
+//        @Autowired
+//        private ModelTypeRepository modelTypeRepository;
+//
+//        @Override
+//        public void run(String...args) throws Exception {
+//            System.out.println("Clearing repository ...");
+//            moduleRepository.deleteAll();
+//            modelTypeRepository.deleteAll();
+//        }
+//    }
 }

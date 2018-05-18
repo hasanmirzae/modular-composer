@@ -25,12 +25,11 @@ public class MainController {
 
     @GetMapping(value = "modules/{uuid}")
     public ModuleData getModuleData(@PathVariable String uuid){
-
         return moduleService.getModuleData(uuid);
     }
 
-    @PostMapping(value = "modules/new")
-    public ModuleData initNewModule(@RequestBody ModuleDescription moduleDescription){
+    @PostMapping(value = "modules")
+    public ModuleData createNewModule(@RequestBody ModuleDescription moduleDescription){
         return moduleService.initNewModule(moduleDescription);
     }
 
